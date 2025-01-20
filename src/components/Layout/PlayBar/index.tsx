@@ -206,19 +206,21 @@ const PlayBar: React.FC<PlayBarProps> = ({ className }) => {
 								${mode === 'random' ? 'i-solar-shuffle-line-duotone' : ''}
 								${mode === 'single' ? 'i-solar-repeat-one-line-duotone' : ''}
 							`}
-							onClick={() => {
-								const newMode =
-									mode === 'list'
-										? 'random'
-										: mode === 'random'
-											? 'single'
-											: 'list';
-								usePlayer.mode = newMode;
-							}}
+							onClick={() =>
+								debounce(() => {
+									const newMode =
+										mode === 'list'
+											? 'random'
+											: mode === 'random'
+												? 'single'
+												: 'list';
+									usePlayer.mode = newMode;
+								}, 300)()
+							}
 						/>
 						<span
 							className="i-solar-rewind-back-line-duotone"
-							onClick={() => usePlayer.prev()}
+							onClick={() => debounce(() => usePlayer.prev(), 300)()}
 						/>
 						<span
 							className={`
@@ -242,7 +244,11 @@ const PlayBar: React.FC<PlayBarProps> = ({ className }) => {
 						/>
 						<span
 							className="i-solar-rewind-forward-line-duotone"
-							onClick={() => usePlayer.next()}
+							onClick={() =>
+								debounce(() => {
+									usePlayer.next();
+								}, 300)()
+							}
 						/>
 						<span
 							className={`
@@ -251,9 +257,11 @@ const PlayBar: React.FC<PlayBarProps> = ({ className }) => {
 								${volume < 0.75 ? 'i-solar-volume-small-line-duotone' : ''}
 								${volume >= 0.75 ? 'i-solar-volume-loud-line-duotone' : ''}
 							`}
-							onClick={() => {
-								usePlayer.muted = !usePlayer.muted;
-							}}
+							onClick={() =>
+								debounce(() => {
+									usePlayer.muted = !usePlayer.muted;
+								}, 300)()
+							}
 							ref={volumeRef}
 							title={'当前音量：' + volume * 100 + '%，点击静音/取消静音'}
 						/>
@@ -295,7 +303,7 @@ const PlayBar: React.FC<PlayBarProps> = ({ className }) => {
 				<div className={styles.playbar__list}>
 					<span
 						className="i-solar-hamburger-menu-line-duotone"
-						onClick={() => setPlayerListModalOpen(true)}
+						onClick={() => debounce(() => setPlayerListModalOpen(true), 300)()}
 					/>
 				</div>
 			</div>
